@@ -86,33 +86,59 @@ def save_and_next(viewer):
 def grid_widget(
     viewer: "napari.Viewer",
     path: str,
-    cube_len: int = 206,
-    start_height: int = 300,
-    start_width: int = 700,
+    cube_len: int = 209,
+    start_height: int = 769,
+    start_width: int = 515,
     num_rows: int = 12,
     num_cols: int = 8,
     add_text: bool = False,
+    rotate_90_degrees: bool = True,
 ):
     global files
     global analysis_path
     global global_add_text
-    for i in range(num_cols):
-        for j in range(num_rows):
-            std_shapes.append(
-                np.array(
-                    [
+    global shape_names
+    global std_shapes
+    shape_names = []
+    std_shapes = []
+    if rotate_90_degrees:
+        for i in range(num_cols):
+            for j in range(num_rows):
+                std_shapes.append(
+                    np.array(
                         [
-                            start_height + j * cube_len,
-                            start_width + i * cube_len,
-                        ],
-                        [
-                            start_height + (j + 1) * cube_len - 1,
-                            start_width + (i + 1) * cube_len - 1,
-                        ],
-                    ]
+                            [
+                                start_height + i * cube_len,
+                                start_width + j * cube_len,
+                            ],
+                            [
+                                start_height + (i + 1) * cube_len - 1,
+                                start_width + (j + 1) * cube_len - 1,
+                            ],
+                        ]
+                    )
                 )
-            )
-            shape_names.append(f"{string.ascii_uppercase[i]}{j+1}")
+                shape_names.append(
+                    f"{string.ascii_uppercase[i]}{num_rows - j}"
+                )
+    else:
+        for i in range(num_cols):
+            for j in range(num_rows):
+                std_shapes.append(
+                    np.array(
+                        [
+                            [
+                                start_height + j * cube_len,
+                                start_width + i * cube_len,
+                            ],
+                            [
+                                start_height + (j + 1) * cube_len - 1,
+                                start_width + (i + 1) * cube_len - 1,
+                            ],
+                        ]
+                    )
+                )
+                shape_names.append(f"{string.ascii_uppercase[i]}{j + 1}")
 
     files = glob(os.path.join(path, "*.tif"))
     analysis_path = os.path.join(path, "analysis")
